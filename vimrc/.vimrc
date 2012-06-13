@@ -204,6 +204,8 @@ if &t_Co > 2
   syntax on
 endif
 
+" Better % matching
+runtime! macros/matchit.vim
 
 set list listchars=tab:»·,trail:·    " Show the leading whitespaces
 set display=uhex                     " Show unprintables as <xx>
