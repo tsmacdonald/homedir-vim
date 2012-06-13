@@ -1,6 +1,7 @@
 " Configuration file for VIM
 "
 " By Christian Holtje & Shawn Zabel
+" Edited by Tim Macdonald
 "
 " Install with:
 "    mkdir -p ~/.vim/bundle && git clone http://github.com/gmarik/vundle.git ~/.vim/bundle/vundle && vim -c ':BundleInstall' -c ':qa!''
@@ -46,7 +47,6 @@ set backspace=indent,eol,start   " Set for maximum backspace smartness
 
 set ignorecase                   " ignore case in searches ... (\c\C override)
 set smartcase                    " ... unless there are caps in the search
-set incsearch                    " If the terminal is slow, turn this off
 
 set number
 set wildmode=list:longest,full   " Completion for wildchar (see help)
@@ -82,20 +82,10 @@ function! LoadBundles()
   " Utility functions for vim
   Bundle 'tomtom/tlib_vim'
 
-  " Snippets - Use <C-n> to use a snippet in insert mode or <r-Tab> to show all.
-  Bundle 'garbas/vim-snipmate'
-  Bundle 'scrooloose/snipmate-snippets'
-
   if v:version > 700
     Bundle 'L9'
     Bundle 'FuzzyFinder'
   endif
-
-  " Autopair mode - If you type '(', it'll fill in ')'
-  Bundle 'Raimondi/delimitMate'
-
-  " Adds matching 'end*' type syntax for ruby, vimscript, and lua
-  Bundle 'tpope/vim-endwise'
 
   " lets you align comments, equal signs, etc.
   Bundle 'godlygeek/tabular'
@@ -197,10 +187,6 @@ let g:syntastic_stl_format = '[%E{Err: %fe #%e}%B{, }%W{Warn: %fw #%w}]'
 
 set background=dark
 
-" The Smash Escape
-inoremap jk <Esc>
-inoremap kj <Esc>
-
 try
   colorscheme solarized
 catch /^Vim\%((\a\+)\)\=:E185/
@@ -216,7 +202,6 @@ endif
 " Also switch on highlighting the last used search pattern.
 if &t_Co > 2
   syntax on
-  set hlsearch
 endif
 
 
@@ -280,6 +265,19 @@ autocmd BufReadPost *
   \   exe "normal! g`\"" |
   \ endif
 
+" Keyboard shortcuts for tab management
+nmap ,, :tabnew<CR>
+nmap ,. :tabnext<CR>
+nmap ., :tabpre<CR>
+
+" Make the clipboard play nicely with X
+if v:version >= 702
+  " Default yank and paste go to system clipboard
+  set clipboard=unnamed
+endif
+
+" Use C-j to invoke FuzzyFinder
+nnoremap <silent> <C-j> :FufCoverageFile<CR>
 
 " Misc. Commands
 "-----------------------------------------------------------------------------
@@ -323,13 +321,6 @@ map <silent> <Leader>fd :FufDir<CR>
 " Paste from tmux
 map <silent> <Leader>tp !!tmux show-buffer <Bar> cat<CR>
 
-if has("macunix")
-  if v:version >= 703
-    " Default yank and paste go to Mac's clipboard
-    set clipboard=unnamed
-  endif
-endif
-
 " With a visual block seleced, fold on space. Refold on space in command mode.
 nnoremap <silent> <Space> @=(foldlevel('.')?'za':'1')<CR>
 vnoremap <Space> zf
@@ -337,9 +328,6 @@ vnoremap <Space> zf
 " Prevent highlight being lost on (de)indent.
 vnoremap < <gv
 vnoremap > >gv
-
-" Indent whole file
-map <silent> <Leader>g mzgg=G'z<CR>
 
 " Make Y behave like other capitals.
 map Y y$
